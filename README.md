@@ -1,16 +1,16 @@
-# Basic REST API with Spring Boot, H2 Database, and JDBC
+# Basic REST API with Spring Boot, PostgreSQL, and JDBC
 
 ## Project Overview
 
-This project is a basic REST API built using Java Spring Boot. It leverages the H2 in-memory database and JDBC for data persistence and interaction.
+This project is a basic REST API built using Java Spring Boot. It leverages the PostgreSQL database and JDBC for data persistence and interaction.
 
 ---
 
 ## Features
 
 - **RESTful Endpoints**: Perform CRUD operations on the database.
-- **In-memory Database**: Uses H2 for lightweight and fast database operations.
-- **JDBC Integration**: Interacts with the H2 database using JDBC.
+- **PostgreSQL Database**: Uses PostgreSQL for reliable and scalable database operations.
+- **JDBC Integration**: Interacts with the PostgreSQL database using JDBC.
 
 ---
 
@@ -20,7 +20,7 @@ This project is a basic REST API built using Java Spring Boot. It leverages the 
 - **Spring Boot**
     - Spring Web
     - Spring JDBC
-- **H2 Database**
+- **PostgreSQL Database**
 - **Maven**
 
 ---
@@ -31,6 +31,7 @@ This project is a basic REST API built using Java Spring Boot. It leverages the 
 
 1. **Java Development Kit (JDK)**: Ensure JDK 17 or later is installed.
 2. **Maven**: Install Maven for dependency management.
+3. **PostgreSQL**: Ensure PostgreSQL is installed and running.
 
 ### Steps to Run the Project
 
@@ -41,51 +42,46 @@ This project is a basic REST API built using Java Spring Boot. It leverages the 
    cd <repository-folder>
    ```
 
-2. **Build the Project**:
+2. **Set Up PostgreSQL Database**:
+
+    - Create a database named `runnerz_db` (or modify `application.properties` for your database name).
+    - Ensure the username and password match the configuration in `application.properties`.
+
+3. **Build the Project**:
 
    ```bash
-   mvn clean install
+    go to --> https://start.spring.io
    ```
 
-3. **Run the Application**:
+4. **Run the Application**:
 
    ```bash
-   mvn spring-boot:run
+   by looking the dependencies in the pom.xml file, you can run the application
    ```
-
-4. **Access the H2 Database Console**:
-
-    - Open a browser and navigate to `http://localhost:8080/h2-console`.
-    - Use the following credentials to connect:
-        - **JDBC URL**: `jdbc:h2:mem:testdb`
-        - **Username**: `sa`
-        - **Password**: *(leave blank)*
 
 ### Configuration
 
 All configurations are located in the `application.properties` file. Default settings include:
 
 ```properties
-spring.h2.console.enabled=true
-spring.h2.console.path=/h2-console
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
-spring.datasource.platform=h2
+spring.datasource.url=jdbc:postgresql://localhost:5432/runnerz_db
+spring.datasource.driverClassName=org.postgresql.Driver
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+spring.jpa.hibernate.ddl-auto=update
 ```
 
 ---
 
 ## API Endpoints
 
-| HTTP Method | Endpoint      | Description             |
-| ----------- | ------------- | ----------------------- |
-| GET         | `/items`      | Fetch all items         |
-| GET         | `/items/{id}` | Fetch item by ID        |
-| POST        | `/items`      | Create a new item       |
-| PUT         | `/items/{id}` | Update an existing item |
-| DELETE      | `/items/{id}` | Delete an item          |
+| HTTP Method | Endpoint         | Description              |
+| ----------- |------------------| ------------------------ |
+| GET         | `/api/runs`      | Fetch all runs           |
+| GET         | `/api/runs/{id}` | Fetch a run by ID        |
+| POST        | `/api/runs`      | Create a new run         |
+| PUT         | `/api/runs/{id}` | Update an existing run   |
+| DELETE      | `/api/runs/{id}` | Delete a run             |
 
 ---
 
@@ -95,29 +91,37 @@ spring.datasource.platform=h2
 src
 ├── main
 │   ├── java
-│   │   └── com.example.restapi
-│   │       ├── controller
-│   │       ├── service
-│   │       ├── model
-│   │       └── repository
+│   │   └── com.example.runnerz
+│   │       └── run
+│   │           ├── Location
+│   │           ├── Run
+│   │           ├── RunController
+│   │           ├── RunJsonDataLoader
+│   │           ├── RunNotFoundException
+│   │           ├── RunRepository
+│   │           └── Runs
 │   └── resources
 │       ├── application.properties
-│       └── data.sql
+│       ├── schema.sql
+│       └── data
+│           └── runs.json
 ```
 
-- **Controller**: Handles incoming HTTP requests.
-- **Service**: Contains business logic.
-- **Repository**: Manages database operations using JDBC.
-- **Data.sql**: Preloads the database with sample data on startup.
+- **RunController**: Handles incoming HTTP requests for the `Run` entity.
+- **RunRepository**: Manages database operations related to `Run` using JDBC.
+- **RunJsonDataLoader**: Handles JSON data loading operations.
+- **RunNotFoundException**: Custom exception for handling run-related errors.
+- **schema.sql**: Contains the database schema definition.
+- **data**: Directory for additional data resources.
 
 ---
 
 ## Testing the API
 
 - Use tools like **Postman** or **cURL** to test the endpoints.
-- Example cURL command to fetch all items:
+- Example cURL command to fetch all runs:
   ```bash
-  curl -X GET http://localhost:8080/items
+  curl -X GET http://localhost:8080/api/runs
   ```
 
 ---
